@@ -13,8 +13,8 @@
 // ────────────────────────────────────────────────────────────────────────────
 // ПОДКЛЮЧИТЕ СВОЙ ВАРИАНТ ЗДЕСЬ (замените одну строку).
 // ────────────────────────────────────────────────────────────────────────────
-#include "variant_roi.hpp"
-// #include "variant_mine.hpp"
+// #include "variant_roi.hpp"
+#include "variant_mine.hpp"
 
 namespace Individual {
     using namespace std;

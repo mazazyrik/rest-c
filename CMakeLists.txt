@@ -28,5 +28,5 @@ if(WIN32)
 else()
     # Linux / macOS: системная SQLite
     find_package(SQLite3 REQUIRED)
-    target_link_libraries(rest_server PRIVATE SQLite3::SQLite3)
+    target_link_libraries(rest_server PRIVATE SQLite::SQLite3)
 endif()
