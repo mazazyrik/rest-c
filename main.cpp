@@ -81,6 +81,7 @@ int main() {
             return;
         }
         std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        res.set_header("Cache-Control", "no-store");
         res.set_content(content, "text/html; charset=utf-8");
     };
     svr.Get("/", send_frontend);

@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-store">
 <title>Коллекция запросов</title>
 <style>
   * { box-sizing: border-box; }
@@ -230,7 +231,7 @@
       <span>Индивидуальное задание</span><span class="arrow">▶</span>
     </header>
     <div class="items">
-      <button onclick="loadPreset('calc-ind')"><span class="method-tag post">POST</span>Расчёт по своему варианту</button>
+      <button onclick="loadPreset('calc-ind')"><span class="method-tag post">POST</span>Расчёт CDN, вариант 33</button>
       <button onclick="loadPreset('works-hist-ind')"><span class="method-tag get">GET</span>История по своему варианту</button>
     </div>
   </div>
@@ -276,6 +277,7 @@
     <div class="grid-2">
       <div>
         <label>Тело запроса (JSON)</label>
+        <div id="field-hint" style="font-size:12px;color:#6b7280;margin:0 0 6px;"></div>
         <div class="copy-wrap">
           <button class="copy-btn" onclick="copyField('body', this)">Копировать</button>
           <textarea id="body" placeholder='{"key": "value"}'></textarea>
@@ -369,6 +371,7 @@ const PRESETS = {
   "works-hist": { method: "GET", url: API + "/works/history?limit=10", body: "" },
   "calc-ind": {
     method: "POST", url: API + "/works/calc-individual",
+    hint: "Поля варианта 33: monthly_active_viewers, avg_streaming_hours_per_viewer, video_bitrate_kbps, cdn_price_per_terabyte",
     body: JSON.stringify({
       monthly_active_viewers: 10000,
       avg_streaming_hours_per_viewer: 10,
@@ -401,6 +404,7 @@ function loadPreset(name) {
   document.getElementById("method").value = p.method;
   document.getElementById("url").value    = p.url;
   document.getElementById("body").value   = p.body;
+  document.getElementById("field-hint").textContent = p.hint || "";
   document.getElementById("response").textContent = "—";
   document.getElementById("status-box").innerHTML = "";
 
@@ -581,7 +585,7 @@ function addHistory(method, url, status, curlCmd) {
 function clearHistory() { document.getElementById("history").innerHTML = ""; }
 
 updateTokenUI();
-loadPreset("health");
+loadPreset("calc-ind");
 
 document.getElementById("url").addEventListener("keydown", e => {
   if (e.key === "Enter") send();
