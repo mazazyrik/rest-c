@@ -285,7 +285,7 @@
         <label>Заголовки</label>
         <div class="copy-wrap">
           <button class="copy-btn" onclick="copyField('headers', this)">Копировать</button>
-          <textarea id="headers" readonly>Authorization: Bearer &lt;из токена&gt;
+          <textarea id="headers">Authorization: Bearer 
 Content-Type: application/json</textarea>
         </div>
       </div>
@@ -311,13 +311,30 @@ Content-Type: application/json</textarea>
 </main>
 
 <script>
-const BASE = "http://localhost:8080";
+const BASE = (location.protocol === "file:") ? "http://localhost:8080" : location.origin;
 const API  = BASE + "/api/v1.1";
 
 let token = localStorage.getItem("token") || "";
 
 function toggleSection(header) {
   header.parentElement.classList.toggle("open");
+}
+
+function fillHeaders() {
+  const area = document.getElementById("headers");
+  if (!area) return;
+  const line = token ? ("Authorization: Bearer " + token) : "Authorization: Bearer ";
+  area.value = line + "\nContent-Type: application/json";
+}
+
+function tokenFromHeaders() {
+  const area = document.getElementById("headers");
+  if (!area) return "";
+  const match = area.value.match(/Authorization:\s*Bearer\s+(\S+)/i);
+  if (!match) return "";
+  const value = match[1];
+  if (value.indexOf("<") !== -1 || value.indexOf(">") !== -1) return "";
+  return value;
 }
 
 function updateTokenUI() {
@@ -330,6 +347,7 @@ function updateTokenUI() {
     bar.classList.remove("ok");
     disp.textContent = "не получен";
   }
+  fillHeaders();
 }
 
 const PRESETS = {
@@ -352,11 +370,10 @@ const PRESETS = {
   "calc-ind": {
     method: "POST", url: API + "/works/calc-individual",
     body: JSON.stringify({
-      marketing_spend: 10000.0,
-      attributed_revenue: 25000.0,
-      agency_fee: 1500.0,
-      production_cost: 500.0,
-      period_days: 30
+      monthly_active_viewers: 10000,
+      avg_streaming_hours_per_viewer: 10,
+      video_bitrate_kbps: 4000,
+      cdn_price_per_terabyte: 5
     }, null, 2)
   },
   "works-hist-ind": {
@@ -449,6 +466,16 @@ async function send() {
   const method = document.getElementById("method").value;
   const url    = document.getElementById("url").value;
   const body   = document.getElementById("body").value.trim();
+
+  const pasted = tokenFromHeaders();
+  if (pasted) {
+    token = pasted;
+    localStorage.setItem("token", token);
+    const bar  = document.getElementById("token-bar");
+    const disp = document.getElementById("token-display");
+    bar.classList.add("ok");
+    disp.textContent = token.slice(0, 24) + "…";
+  }
 
   const headers = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = "Bearer " + token;

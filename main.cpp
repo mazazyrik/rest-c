@@ -14,6 +14,9 @@
 
 #include <iostream>
 #include <exception>
+#include <fstream>
+#include <iterator>
+#include <string>
 
 int main() {
     // ---- 1. Инициализация ----
@@ -70,7 +73,19 @@ int main() {
         res.status = 204;
     });    
 
-    // ---- 8. Healthcheck ----
+    // ---- 8. Страница запросов и healthcheck ----
+    auto send_frontend = [](const httplib::Request&, httplib::Response& res) {
+        std::ifstream file("frontend/index.html");
+        if (!file) {
+            res.status = 404;
+            return;
+        }
+        std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        res.set_content(content, "text/html; charset=utf-8");
+    };
+    svr.Get("/", send_frontend);
+    svr.Get("/frontend/index.html", send_frontend);
+
     svr.Get("/health", [](const httplib::Request&, httplib::Response& res) {
         JObj o;
         o.str("status", "ok");
