@@ -1,0 +1,17 @@
+.git
+.github
+build
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.o
+*.a
+*.exe
+*.dll
+*.so
+*.dylib
+data/rest.db
+.vscode
+.idea
+.DS_Store
